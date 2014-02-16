@@ -18,7 +18,7 @@ int main()
 
 	key = 75;
 	// 1 page == PAGE_SIZE
-	if ((shmid = shmget(IPC_PRIVATE, 1023, IPC_CREAT | IPC_EXCL)) == -1)//creation segment memoire et retourd d'un id segment
+	if ((shmid = shmget(key, 1023, IPC_CREAT | IPC_EXCL)) == -1)//creation segment memoire et retourd d'un id segment
 		perror("shmid non valide -> ");
 
 	addr = shmat(shmid, 0, 0);//attachement segment -> processus 
