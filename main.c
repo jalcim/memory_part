@@ -1,6 +1,7 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/types.h>
+#include <sys/sem.h>
 
 #include <unistd.h>
 #include <sys/mman.h>
@@ -17,12 +18,15 @@ int main()
 	struct shmid_ds seg_info;
 
 	key = 75;
+
+	if (fork())
+		sleep(10);
 	// 1 page == PAGE_SIZE
-	if ((shmid = shmget(key, 1023, IPC_CREAT | IPC_EXCL)) == -1)//creation segment memoire et retourd d'un id segment
-		perror("shmid non valide -> ");
+	if ((shmid = shmget(key , 1024, IPC_CREAT | IPC_EXCL)) == -1)//creation segment memoire et retourd d'un id segment ; IPC_PRIVATE ne lit que sauf les 9 premiers bits du flag et créer un nouveau segment
+		perror("error -> shmget : ");
 
 	addr = shmat(shmid, 0, 0);//attachement segment -> processus 
-//(si addr(arg2) != 0 && arg3(flag) == SHM_RMD ? attachement a l'addresse (SHMLBA * ((addr / SHMLBA) + SHMLBA)) : addr -> ? -> system => ! => addr
+//(si addr(arg2) != 0 && arg3(flag) == SHM_RMD ? attachement a l'addresse (SHMLBA * ((addr / SHMLBA) + 1)) : addr -> ? -> system => ! => addr
 	if (-1 == (long unsigned int)addr)
 		perror("error -> shmat : ");
 
@@ -51,5 +55,4 @@ int main()
 	return (errno);
 }
 
-
-//	mem = mmap(NULL, 60, PROT_WRITE | PROT_READ, fd, 0);
+//	mem = mmap(NULL, 60, PROT_WRITE | PROT_READ | SHM_NORESERVE, fd, 0);
