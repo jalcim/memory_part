@@ -25,7 +25,7 @@ int main()
 	if ((shmid = shmget(key , 1024, IPC_CREAT | IPC_EXCL)) == -1)//creation segment memoire et retourd d'un id segment ; IPC_PRIVATE ne lit que sauf les 9 premiers bits du flag et créer un nouveau segment
 		perror("error -> shmget : ");
 
-	addr = shmat(shmid, 0, 0);//attachement segment -> processus 
+	addr = shmat(shmid, NULL, NULL);//attachement segment -> processus 
 //(si addr(arg2) != 0 && arg3(flag) == SHM_RMD ? attachement a l'addresse (SHMLBA * ((addr / SHMLBA) + 1)) : addr -> ? -> system => ! => addr
 	if (-1 == (long unsigned int)addr)
 		perror("error -> shmat : ");
